@@ -1,18 +1,50 @@
-import React, { useContext } from 'react'
-import { Gamecontext } from '../context/GameContext'
-import Row from './Row'
+import React from "react";
+import { useGameContext } from "../context/GameContext";
+import Row from "./Row";
+import FinModal from "./FinModal";
 
 function Board() {
-    const {params, table} = useContext(Gamecontext)
-    // console.log(params)
-    // console.log(table)
-    // table.map((el,i) => console.log(el,i))
-   
+  const { table, resetGame, history, playerTurn, showWaitingMessage, isEnd } =
+    useGameContext();
+
+  let player = playerTurn ? "X" : "O";
+  let turn = history.length + 1;
+
   return (
-    <div className='flex flex-col justify-between min-w-96 max-h-[calc(100vh-120px)] overflow-auto gap-1'>
-      {table.map((el,i) => <Row key={i} item={el} index={i}/>)}
-    </div>
-  )
+    <>
+      <div className="flex flex-col justify-between min-w-96 max-h-[calc(100vh-120px)] overflow-auto gap-4">
+        <h1 className="text-2xl">{`Turn ${turn}`}</h1>
+
+        {/* WaitingMessage */}
+        {!isEnd && (
+          <h1 className="text-lg">
+            {`waiting for ${player} moves `}
+            {showWaitingMessage && (
+              <span className="loading loading-dots loading-xs align-bottom"></span>
+            )}
+          </h1>
+        )}
+        {isEnd && (
+          <h1 className="text-lg">Game has ended with {player} victory</h1>
+        )}
+
+        {/* Game section */}
+        <div className="flex flex-col justify-between w-full h-full gap-1">
+          {table.map((el, i) => (
+            <Row key={i} item={el} index={i} />
+          ))}
+        </div>
+
+        {/* button group */}
+        <button className="btn" onClick={resetGame}>
+          Reset Game
+        </button>
+      </div>
+
+      {/* Game finish modal */}
+      <FinModal />
+    </>
+  );
 }
 
-export default Board
+export default Board;
