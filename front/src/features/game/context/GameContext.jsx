@@ -7,36 +7,36 @@ const Gamecontext = createContext();
 export default function GameContextProvider({ children }) {
   const params = useParams();
 
-  // console.log(params)
-  // x,y,rule,type
-
   const { x, y, rule, type } = params;
-  // console.log("xxxxx",x)
-  // console.log("yyyyy",y)
-  // console.log("rule", rule)
 
   const initialTable = [];
 
   for (let j = 0; j < y; j++) {
     let temp = [];
     for (let i = 0; i < x; i++) {
-      // console.log([i,j])
       temp.push([i, j, ""]);
     }
     initialTable.push(temp);
+    // console.log(initialTable)
   }
-  // console.log(initialTable)
 
   const [table, setTable] = useState(initialTable);
   const [playerTurn, setPlayerTurn] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [history, setHistory] = useState([]);
-  const [isMoving,setIsMoving] = useState(false)
-  const [isReplay, setIsReplay] = useState(false)
+  const [isMoving, setIsMoving] = useState(false);
+  const [isReplay, setIsReplay] = useState(false);
+  const [replayTurn, setReplayTurn] = useState(0);
   const [showWaitingMessage, setShowWaitingMessage] = useState(false);
 
+  useEffect(() => {
+    // To Prevent Quick play Bug
+    resetGame()
+  }, [params]);
+
+
   const resetGame = () => {
-    console.log("resetGame")
+    console.log("resetGame");
     // Auto reset
     // window.location.reload()
 
@@ -44,41 +44,41 @@ export default function GameContextProvider({ children }) {
     setTable(initialTable);
     setPlayerTurn(true);
     setIsEnd(false);
-    setHistory([])
-    setIsMoving(false)
-    setIsReplay(false)
-    setShowWaitingMessage(false)
+    setHistory([]);
+    setIsMoving(false);
+    setIsReplay(false);
+    setShowWaitingMessage(false);
 
     //close Modal
-    document.getElementById('post_game_modal').close()
+    document.getElementById("post_game_modal").close();
 
-    toast.info("Game has been reset")
-  }
+    toast.info("Game has been reset");
+  };
 
   const handleMove = (row, col, mark = "X") => {
-    setShowWaitingMessage(false)
-    setIsMoving(true)
+    setShowWaitingMessage(false);
+    setIsMoving(true);
     // update table
     let temp = [...table];
     temp[row][col].splice(2, 1, mark);
     setTable(temp);
-    setHistory([...history,[col,row,mark]])
+    setHistory([...history, [col, row, mark]]);
 
-    checkWinner(row, col)
-    setIsMoving(false)
+    checkWinner(row, col);
+    setIsMoving(false);
   };
 
   let scoreCount = 1;
   //TODO: highligh all the winning tiles(red background!?)
   // store co-od  when score count change OR made it {score, [coodArray,[], ...]}
-  // let winCoodArray = [] 
+  // let winCoodArray = []
 
   const isWin = () => {
     if (scoreCount >= rule) {
       console.log(`Player ${playerTurn ? "X" : "O"} Wins`);
       setIsEnd(true);
 
-      document.getElementById('post_game_modal').showModal()
+      document.getElementById("post_game_modal").showModal();
       return true;
     } else {
       scoreCount = 1;
@@ -105,7 +105,7 @@ export default function GameContextProvider({ children }) {
     // lower
     for (let i = 1; i < rule; i++) {
       //catch out of bound error
-      if (row + i >= x) {
+      if (row + i >= y) {
         break;
       }
 
@@ -138,7 +138,7 @@ export default function GameContextProvider({ children }) {
     // lower
     for (let i = 1; i < rule; i++) {
       //catch out of bound error
-      if (col + i >= y) {
+      if (col + i >= x) {
         break;
       }
 
@@ -171,7 +171,7 @@ export default function GameContextProvider({ children }) {
     // lower-right
     for (let i = 1; i < rule; i++) {
       //catch out of bound error
-      if (row + i >= x || col + i >= y) {
+      if (row + i >= y || col + i >= x) {
         break;
       }
 
@@ -182,14 +182,14 @@ export default function GameContextProvider({ children }) {
         break;
       }
     }
-    if(isWin()) {
+    if (isWin()) {
       return true;
     }
 
     // upper-right
     for (let i = 1; i < rule; i++) {
       //catch out of bound error
-      if (row - i < 0 || col + i >= y) {
+      if (row - i < 0 || col + i >= x) {
         break;
       }
 
@@ -203,7 +203,7 @@ export default function GameContextProvider({ children }) {
     // lower-left
     for (let i = 1; i < rule; i++) {
       //catch out of bound error
-      if (row + i >= x || col - i < 0) {
+      if (row + i >= y || col - i < 0) {
         break;
       }
 
@@ -214,20 +214,27 @@ export default function GameContextProvider({ children }) {
         break;
       }
     }
-    if(isWin()) {
+    if (isWin()) {
       return true;
     }
 
-    return false
+    return false;
   };
 
   const checkWinner = (row, col) => {
     const currentMove = table[row][col][2];
+    // console.log("row", row)
+    // console.log("col", col)
+    // console.log("x",x)
+    // console.log("y",y)
 
-    verticalCheck(row, col, currentMove) ? toast.success("winner found")
-    : horizontalCheck(row, col, currentMove) ? toast.success("winner found")
-    : crossCheck(row, col, currentMove) ? toast.success("winner found")
-    : setPlayerTurn(!playerTurn)
+    verticalCheck(row, col, currentMove)
+      ? toast.success("winner found")
+      : horizontalCheck(row, col, currentMove)
+      ? toast.success("winner found")
+      : crossCheck(row, col, currentMove)
+      ? toast.success("winner found")
+      : setPlayerTurn(!playerTurn);
   };
 
   const handlePlay = (row, col) => {
@@ -246,10 +253,10 @@ export default function GameContextProvider({ children }) {
   };
 
   useEffect(() => {
-    // Set a delay of 2 seconds
+    // Set a delay of 3 seconds
     const timer = setTimeout(() => {
       setShowWaitingMessage(true);
-    }, 2000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [history]);
@@ -257,10 +264,21 @@ export default function GameContextProvider({ children }) {
   // console.log(history)
 
   return (
-    <Gamecontext.Provider value={{ params, table, handlePlay, isEnd, history, playerTurn, resetGame, showWaitingMessage }}>
+    <Gamecontext.Provider
+      value={{
+        params,
+        table,
+        handlePlay,
+        isEnd,
+        history,
+        playerTurn,
+        resetGame,
+        showWaitingMessage,
+      }}
+    >
       {children}
     </Gamecontext.Provider>
   );
 }
 
-export const useGameContext = () => useContext(Gamecontext)
+export const useGameContext = () => useContext(Gamecontext);

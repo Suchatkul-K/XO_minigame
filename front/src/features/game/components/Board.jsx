@@ -13,7 +13,12 @@ function Board() {
   return (
     <>
       <div className="flex flex-col justify-between min-w-96 max-h-[calc(100vh-120px)] overflow-auto gap-4">
+        {/* TODO: if game end, change to replay turns toggle */}
+        <div className="flex justify-around">
+        {isEnd && <button className="btn">last turn</button>}
         <h1 className="text-2xl">{`Turn ${turn}`}</h1>
+        {isEnd && <button className="btn">next turn</button>}
+        </div>
 
         {/* WaitingMessage */}
         {!isEnd && (
