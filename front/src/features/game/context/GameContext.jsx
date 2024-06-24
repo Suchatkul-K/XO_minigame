@@ -62,9 +62,16 @@ export default function GameContextProvider({ children }) {
     let temp = [...table];
     temp[row][col].splice(2, 1, mark);
     setTable(temp);
-    setHistory([...history, [col, row, mark]]);
-
+    const updateHistory = [...history, [col, row, mark]]
+    setHistory(updateHistory);
+    
     checkWinner(row, col);
+    // check draw
+    if(updateHistory.length >= x*y) {
+      setIsEnd(true)
+
+      document.getElementById("post_game_modal").showModal();
+    }
     setIsMoving(false);
   };
 

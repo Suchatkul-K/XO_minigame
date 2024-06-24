@@ -8,7 +8,7 @@ function Board() {
     useGameContext();
 
   let player = playerTurn ? "X" : "O";
-  let turn = history.length + 1;
+  let turn = isEnd? history.length : history.length + 1;
 
   return (
     <>
