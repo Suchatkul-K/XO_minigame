@@ -2,13 +2,10 @@ import React from "react";
 import { useGameContext } from "../context/GameContext";
 
 function FinModal() {
-  const { isEnd, table, history, playerTurn, resetGame } = useGameContext();
+  const { table, history, playerTurn, resetGame } = useGameContext();
 
   let isDraw = history.length == table[0].length * table.length;
-  // console.log(isDraw)
   let winner = playerTurn ? "X" : "O";
-
-  // TODO: Game replay action
 
   return (
     <dialog id="post_game_modal" className="modal">
@@ -25,14 +22,13 @@ function FinModal() {
           <button className="btn" onClick={resetGame}>
             Play Again
           </button>
-          <button className="btn">Watch game replay</button>
           <button
             className="btn"
             onClick={() => {
               document.getElementById("post_game_modal").close();
             }}
           >
-            Close
+            Watch game replay
           </button>
         </div>
       </div>

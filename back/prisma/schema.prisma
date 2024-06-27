@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @db.VarChar(40)
+  email    String   @unique @db.VarChar(40)
+  password String
+  replay   Replay[]
+}
+
+model Replay {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
+  row         Int      @default(3)
+  column      Int      @default(3)
+  rule        Int      @default(3)
+  type        Boolean  @default(true)
+  gameHistory Json     @map("game_history")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+}

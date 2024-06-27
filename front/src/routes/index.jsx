@@ -3,6 +3,7 @@ import LandingPage from "../pages/LandingPage";
 import OptionPage from "../pages/OptionPage";
 import Layout from "../components/Layout";
 import GamePage from "../pages/GamePage";
+import ReplayPage from "../pages/ReplayPage";
 
 const router = createBrowserRouter([
     {path: "/",
@@ -23,6 +24,11 @@ const router = createBrowserRouter([
             {path: "game/:x/:y/:rule/:type",
                 element:(
                     <GamePage />
+                )
+            },
+            {path: "replay/:id",
+                element:(
+                    <ReplayPage />
                 )
             },
         ]
