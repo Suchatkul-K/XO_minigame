@@ -24,20 +24,20 @@ How to:
 
 What's in here:
 1) Front end :TailWind, DaisyUI, Joi validation
-   1.1) User & Authentication
+  1.1) User & Authentication
      Comprise of login, register, logout, validation and accesstoken verification
-   1.2) Game Setting
+  1.2) Game Setting
      Collapsable boardsize setting, game rule & game mode dropdown
-   1.3) Main game
+  1.3) Main game
      Initialize game board(params), move and win condition logic(for every board setting), waiting message, reset game and post-game replay
-   1.4) User replay
+  1.4) User replay
      Fetching save game and replay game display
-   1.5) Nav bar
+  1.5) Nav bar
      1.5.1) Left side : Quick game, To setup menu
      1.5.2) Left/middle side : Home button
      1.5.3) Right side : User id display, login dropdown(open modal form on click), game history list if any, logout button
-2) Back end :Express, Bcrypt.js, jasonwebtoken, Prisma
-   2.1) Auth
+3) Back end :Express, Bcrypt.js, jasonwebtoken, Prisma
+  2.1) Auth
      Login, Register, getMe(token authenicate)
-   2.2) Replay
+  2.2) Replay
      Save new replay, get replay-list by userId, get replay by replay id
