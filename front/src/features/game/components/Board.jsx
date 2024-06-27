@@ -2,22 +2,26 @@ import React from "react";
 import { useGameContext } from "../context/GameContext";
 import Row from "./Row";
 import FinModal from "./FinModal";
+import { useReplay } from "../../replay/context/ReplayContext";
 
 function Board() {
-  const { table, resetGame, history, playerTurn, showWaitingMessage, isEnd } =
+  const { table, resetGame, history, playerTurn, showWaitingMessage, isEnd, params, replayTurn, handleLastTurn, handleNextTurn, handlePlay } =
     useGameContext();
 
+  const { saveReplay } = useReplay()
+
   let player = playerTurn ? "X" : "O";
-  let turn = isEnd? history.length : history.length + 1;
+  let turn = isEnd ? replayTurn : history.length + 1;
+
+  const { x, y, rule, type } = params;
 
   return (
     <>
       <div className="flex flex-col justify-between min-w-96 max-h-[calc(100vh-120px)] overflow-auto gap-4">
-        {/* TODO: if game end, change to replay turns toggle */}
         <div className="flex justify-around">
-        {isEnd && <button className="btn">last turn</button>}
-        <h1 className="text-2xl">{`Turn ${turn}`}</h1>
-        {isEnd && <button className="btn">next turn</button>}
+          {isEnd && <button className="btn" onClick={handleLastTurn}>last turn</button>}
+          <h1 className="text-2xl">{`Turn ${turn}`}</h1>
+          {isEnd && <button className="btn" onClick={handleNextTurn}>next turn</button>}
         </div>
 
         {/* WaitingMessage */}
@@ -36,14 +40,19 @@ function Board() {
         {/* Game section */}
         <div className="flex flex-col justify-between w-full h-full gap-1">
           {table.map((el, i) => (
-            <Row key={i} item={el} index={i} />
+            <Row key={i} item={el} index={i} onClick={handlePlay}/>
           ))}
         </div>
 
         {/* button group */}
-        <button className="btn" onClick={resetGame}>
-          Reset Game
-        </button>
+        <div className="flex flex-col gap-4">
+          <button className="btn" onClick={resetGame}>
+            Reset Game
+          </button>
+          {isEnd && <button className="btn" onClick={() => {saveReplay(+y,+x,+rule,type == "true",history)}}>
+            Save game replay
+          </button>}
+        </div>
       </div>
 
       {/* Game finish modal */}

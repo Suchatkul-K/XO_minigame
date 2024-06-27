@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .responsive-font {
-    font-size: var(--font-size, 1rem);
-  }
+  font-size: var(--font-size, 1rem);
+}

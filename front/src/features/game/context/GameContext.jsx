@@ -25,15 +25,24 @@ export default function GameContextProvider({ children }) {
   const [isEnd, setIsEnd] = useState(false);
   const [history, setHistory] = useState([]);
   const [isMoving, setIsMoving] = useState(false);
-  const [isReplay, setIsReplay] = useState(false);
+  // const [isReplay, setIsReplay] = useState(false);
   const [replayTurn, setReplayTurn] = useState(0);
   const [showWaitingMessage, setShowWaitingMessage] = useState(false);
 
   useEffect(() => {
     // To Prevent Quick play Bug
-    resetGame()
+    setup();
   }, [params]);
 
+  const setup = () => {
+    setTable(initialTable);
+    setPlayerTurn(true);
+    setIsEnd(false);
+    setHistory([]);
+    setIsMoving(false);
+    // setIsReplay(false);
+    setShowWaitingMessage(false);
+  };
 
   const resetGame = () => {
     console.log("resetGame");
@@ -41,13 +50,7 @@ export default function GameContextProvider({ children }) {
     // window.location.reload()
 
     // manual reset
-    setTable(initialTable);
-    setPlayerTurn(true);
-    setIsEnd(false);
-    setHistory([]);
-    setIsMoving(false);
-    setIsReplay(false);
-    setShowWaitingMessage(false);
+    setup();
 
     //close Modal
     document.getElementById("post_game_modal").close();
@@ -62,13 +65,14 @@ export default function GameContextProvider({ children }) {
     let temp = [...table];
     temp[row][col].splice(2, 1, mark);
     setTable(temp);
-    const updateHistory = [...history, [col, row, mark]]
+    const updateHistory = [...history, [col, row, mark]];
     setHistory(updateHistory);
-    
+
     checkWinner(row, col);
     // check draw
-    if(updateHistory.length >= x*y) {
-      setIsEnd(true)
+    if (updateHistory.length >= x * y) {
+      setIsEnd(true);
+      setReplayTurn(updateHistory.length);
 
       document.getElementById("post_game_modal").showModal();
     }
@@ -83,6 +87,7 @@ export default function GameContextProvider({ children }) {
   const isWin = () => {
     if (scoreCount >= rule) {
       console.log(`Player ${playerTurn ? "X" : "O"} Wins`);
+      setReplayTurn(history.length + 1);
       setIsEnd(true);
 
       document.getElementById("post_game_modal").showModal();
@@ -268,7 +273,36 @@ export default function GameContextProvider({ children }) {
     return () => clearTimeout(timer);
   }, [history]);
 
-  // console.log(history)
+  // Replay turn handle
+  const handleLastTurn = () => {
+    if (replayTurn > 1) {
+      // const replay = history.slice(0, replayTurn - 1);
+      // console.log("Last", replay)
+      const change = history.slice(replayTurn - 1, replayTurn);
+      // console.log("change", change)
+
+      let temp = [...table];
+      temp[change[0][1]][change[0][0]].splice(2, 1, "");
+      setTable(temp);
+
+      setReplayTurn(replayTurn - 1);
+    }
+  };
+
+  const handleNextTurn = () => {
+    if (replayTurn < history.length) {
+      // const replay = history.slice(0, replayTurn + 1);
+      // console.log("Next", replay)
+      const change = history.slice(replayTurn, replayTurn + 1);
+      // console.log("change", change)
+
+      let temp = [...table];
+      temp[change[0][1]][change[0][0]].splice(2, 1, change[0][2]);
+      setTable(temp);
+
+      setReplayTurn(replayTurn + 1);
+    }
+  };
 
   return (
     <Gamecontext.Provider
@@ -281,6 +315,9 @@ export default function GameContextProvider({ children }) {
         playerTurn,
         resetGame,
         showWaitingMessage,
+        replayTurn,
+        handleLastTurn,
+        handleNextTurn,
       }}
     >
       {children}

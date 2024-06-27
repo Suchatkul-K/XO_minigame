@@ -1,9 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { MenuIcon } from "../icons";
+import { useAuth } from "../features/user/context/UserContext";
+import { useReplay } from "../features/replay/context/ReplayContext";
 
 function NavBar() {
   const navigate = useNavigate();
+
+  const { authUser, logout } = useAuth();
+  const { getList } = useReplay()
   return (
     <div className="navbar bg-base-100 absolute">
       {/* Left Menu */}
@@ -17,10 +22,22 @@ function NavBar() {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <div onClick={() => {navigate("/game/3/3/3/pvp")}}>Play Quick Game</div>
+              <div
+                onClick={() => {
+                  navigate("/game/3/3/3/true");
+                }}
+              >
+                Play Quick Game
+              </div>
             </li>
             <li>
-              <div onClick={() => {navigate("/option")}}>Game setup Menu</div>
+              <div
+                onClick={() => {
+                  navigate("/option");
+                }}
+              >
+                Game setup Menu
+              </div>
             </li>
           </ul>
         </div>
@@ -39,6 +56,7 @@ function NavBar() {
       {/* Right Menu */}
       <div className="flex-none">
         {/* Profile */}
+        {authUser? <div>{authUser.username}</div>:<div>Guest</div>}
         <div className="dropdown dropdown-end">
           {/* image button */}
           <div
@@ -54,23 +72,33 @@ function NavBar() {
             </div>
           </div>
           {/* Menu list */}
-          {/* TODO: login register replay & history */}
           <ul
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li>
-              <div className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </div>
-            </li>
-            <li>
-              <div>Settings</div>
-            </li>
-            <li>
-              <div>Logout</div>
-            </li>
+            {authUser ? (
+              <>
+                <li>
+                  <div className="justify-between" onClick={getList}>
+                    Game history
+                    <span className="badge">New</span>
+                  </div>
+                </li>
+                <li>
+                  <div onClick={logout}>Logout</div>
+                </li>
+              </>
+            ) : (
+              <li>
+                <div
+                  onClick={() =>
+                    document.getElementById("loginModal").showModal()
+                  }
+                >
+                  Login
+                </div>
+              </li>
+            )}
           </ul>
         </div>
       </div>

@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import { useGameContext } from "../context/GameContext";
 
-function Row({ item, index }) {
-  const { handlePlay } = useGameContext();
+function Row({ item, index, onClick }) {
   const itemInRow = item.length
 
   // responsive font for suitable Mark size
@@ -37,8 +35,7 @@ function Row({ item, index }) {
         <div
           key={i}
           className="btn p-0 h-full aspect-square flex-grow"
-          onClick={(e) => handlePlay(index, i)}
-          // id={`block-${index}-${i}`}
+          onClick={(e) => onClick(index, i)}
         >
           <p className="responsive-font max-w-full font-semibold">
           {el[2]}
