@@ -3,6 +3,7 @@ import { useGameContext } from "../context/GameContext";
 import Row from "./Row";
 import FinModal from "./FinModal";
 import { useReplay } from "../../replay/context/ReplayContext";
+import { toast } from "react-toastify";
 
 function Board() {
   const { table, resetGame, history, playerTurn, showWaitingMessage, isEnd, params, replayTurn, handleLastTurn, handleNextTurn, handlePlay } =
@@ -49,7 +50,7 @@ function Board() {
           <button className="btn" onClick={resetGame}>
             Reset Game
           </button>
-          {isEnd && <button className="btn" onClick={() => {saveReplay(+y,+x,+rule,type == "true",history)}}>
+          {isEnd && <button className="btn" onClick={() => {saveReplay(+y,+x,+rule,type == "true",history), toast.success("Game saved")}}>
             Save game replay
           </button>}
         </div>

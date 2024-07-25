@@ -42,6 +42,7 @@ export default function ReplayContextProvider({ children }) {
         .then((res) => {
           // console.log(res.data.replay);
           setReplay(res.data.replay)
+          toast.success("Game save loaded")
         })
         .catch((err) => {
           toast.error(err.response?.data.message);

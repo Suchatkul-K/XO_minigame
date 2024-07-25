@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useReplay } from "../context/ReplayContext";
 import Row from "../../game/components/Row";
+import { toast } from "react-toastify";
 
 function ReplayBoard() {
 
   const { table, replayTurn, handleLastTurn, handleNextTurn } = useReplay()
+
+  // useEffect(() => {
+  //   toast.success("Save game loaded")
+  // }, [])
 
   return (
     <>
